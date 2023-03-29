@@ -19,189 +19,198 @@
         </svg>
       </nav>
       <div class="toggle">
-        <div @click="data.isShow = '商品'"><span :class="{ active: data.isShow == '商品' }">商品</span></div>
-        <div @click="data.isShow = '评价'"><span :class="{ active: data.isShow == '评价' }">评价</span></div>
+        <div @click="toggle('商品')"><span :class="{ active: data.isShow == '商品' }">商品</span></div>
+        <div @click="toggle('评价')"><span :class="{ active: data.isShow == '评价' }">评价</span></div>
       </div>
     </div>
-    <section class="food-container" v-show="data.isShow == '商品'">
-      <div class="side-bar" ref="sideWrapper">
-        <ul class="items">
-          <li class="item" v-for="(item, index) in data.menuList" :key="index"
-            :class="{ active: index === data.menuIndex }" @click="chooseMenu(index)">
-            {{ item.name }}
-          </li>
-        </ul>
-      </div>
-      <div class="commodity-list " ref="foodWrapper">
-        <ul class="list">
-          <li v-for="(item, index) in data.menuList" :key="index">
-            <header>
-              <div class="left">
-                <h2>{{ item.name }}</h2>
-                <span>{{ item.description }}</span>
-              </div>
-              <span>···</span>
-            </header>
-            <div class="commodity" v-for="(foods, foodindex) in item.foods" :key="foodindex">
-              <router-link to="/home" class="detail_link">
-                <img :src="imgBaseUrl + foods.image_path" alt="">
-              </router-link>
-              <section class="commodity-detail">
-                <section class="detail-right">
-                  <h3>
-                    <span class="title">{{ foods.name }}</span>
-                    <span class="zhaopai">招牌</span>
-                  </h3>
-                  <p class="description-content">{{ foods.description }}</p>
-                  <p class="description-rating">
-                    <span>
-                      月售{{ foods.month_sales }}份
-                    </span>
-                    <span>
-                      好评率{{ foods.satisfy_rate }}%
-                    </span>
-                  </p>
-                  <p class="description-price">
-                    <span class="price">${{ foods.specfoods[0].price }}</span>
-                    <buy-cart :shopId='data.shopId' :foods='foods' @moveInCart="listenInCart"
-                      @showChooseList="showChooseList" @showReduceTip="showReduceTip"
-                      @showMoveDot="showMoveDotFun"></buy-cart>
-                  </p>
-                </section>
-              </section>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <section class="buy_cart_container">
-        <section @click="toggleCartList" class="cart_icon_num">
-          <div class="cart_icon_container"
-            :class="{ cart_icon_activity: data.totalPrice > 0, move_in_cart: data.receiveInCart }" ref="cartContainer">
-            <span v-if="totalNum" class="cart_list_length">
-              {{ totalNum }}
-            </span>
-            <svg class="cart_icon">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
-            </svg>
-          </div>
-          <div class="cart_num">
-            <div>¥ {{ data.totalPrice }}</div>
-            <div>配送费¥￥{{ deliveryFee }}</div>
-          </div>
-        </section>
-        <section class="gotopay" :class="{ gotopay_acitvity: minimumOrderAmount <= 0 }">
-          <span class="gotopay_button_style" v-if="minimumOrderAmount > 0">还差¥{{ minimumOrderAmount }}起送</span>
-          <router-link :to="{ path: '/confirmOrder', query: { geohash: data.geohash, shopid: data.shopId } }"
-            class="gotopay_button_style" v-else>去结算</router-link>
-        </section>
-      </section>
-      <transition name="toggle-cart">
-        <section class="cart_food_list" v-show="data.showCartList && data.cartFoodList.length">
-          <header>
-            <h4>购物车</h4>
-            <div @click="clearCart">
-              <svg>
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-remove"></use>
-              </svg>
-              <span class="clear_cart">清空</span>
-            </div>
-          </header>
-          <section class="cart_food_details" id="cartFood">
-            <ul>
-              <li v-for="(item, index) in data.cartFoodList" :key="index" class="cart_food_li">
-                <div class="cart_list_num">
-                  <p class="ellipsis">{{ item.name }}</p>
-                  <p class="ellipsis">{{ item.specs }}</p>
-                </div>
-                <div class="cart_list_price">
-                  <span>¥</span>
-                  <span>{{ item.price }}</span>
-                </div>
-                <section class="cart_list_control">
-                  <span
-                    @click="removeOutCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
-                    <svg>
-                      <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
-                    </svg>
-                  </span>
-                  <span class="cart_num">{{ item.num }}</span>
-                  <svg class="cart_add"
-                    @click="addToCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
-                  </svg>
-                </section>
+    <div class="container">
+      <transition name="slide-fade" mode="out-in">
+        <section class="food-container" v-show="data.isShow == '商品'">
+          <div class="side-bar" ref="sideWrapper">
+            <ul class="items">
+              <li class="item" v-for="(item, index) in data.menuList" :key="index"
+                :class="{ active: index === data.menuIndex }" @click="chooseMenu(index)">
+                {{ item.name }}
               </li>
             </ul>
+          </div>
+          <div class="commodity-list" ref="foodWrapper">
+            <ul class="list">
+              <li v-for="(item, index) in data.menuList" :key="index">
+                <header>
+                  <div class="left">
+                    <h2>{{ item.name }}</h2>
+                    <span>{{ item.description }}</span>
+                  </div>
+                  <span>···</span>
+                </header>
+                <div class="commodity" v-for="(foods, foodindex) in foodsList(index)" :key="foodindex">
+                  <router-link to="/home" class="detail_link">
+                    <img :src="imgBaseUrl + foods.image_path" alt="">
+                  </router-link>
+                  <section class="commodity-detail">
+                    <section class="detail-right">
+                      <h3>
+                        <span class="title">{{ foods.name }}</span>
+                        <span class="zhaopai">招牌</span>
+                      </h3>
+                      <p class="description-content">{{ foods.description }}</p>
+                      <p class="description-rating">
+                        <span>
+                          月售{{ foods.month_sales }}份
+                        </span>
+                        <span>
+                          好评率{{ foods.satisfy_rate }}%
+                        </span>
+                      </p>
+                      <p class="description-price">
+                        <span class="price">${{ foods.specfoods[0].price }}</span>
+                        <buy-cart :shopId='data.shopId' :foods='foods' @moveInCart="listenInCart"
+                          @showChooseList="showChooseList" @showReduceTip="showReduceTip"
+                          @showMoveDot="showMoveDotFun"></buy-cart>
+                      </p>
+                    </section>
+                  </section>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <section class="buy_cart_container">
+            <section @click="toggleCartList" class="cart_icon_num">
+              <div class="cart_icon_container"
+                :class="{ cart_icon_activity: data.totalPrice > 0, move_in_cart: data.receiveInCart }"
+                ref="cartContainer">
+                <span v-if="totalNum" class="cart_list_length">
+                  {{ totalNum }}
+                </span>
+                <svg class="cart_icon">
+                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-icon"></use>
+                </svg>
+              </div>
+              <div class="cart_num">
+                <div>¥ {{ data.totalPrice }}</div>
+                <div>配送费¥￥{{ deliveryFee }}</div>
+              </div>
+            </section>
+            <section class="gotopay" :class="{ gotopay_acitvity: minimumOrderAmount <= 0 }">
+              <span class="gotopay_button_style" v-if="minimumOrderAmount > 0">还差¥{{ minimumOrderAmount }}起送</span>
+              <router-link :to="{ path: '/confirmOrder', query: { geohash: data.geohash, shopid: data.shopId } }"
+                class="gotopay_button_style" v-else>去结算</router-link>
+            </section>
           </section>
+          <transition name="toggle-cart">
+            <section class="cart_food_list" v-show="data.showCartList && data.cartFoodList.length">
+              <header>
+                <h4>购物车</h4>
+                <div @click="clearCart">
+                  <svg>
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-*6vwove"></use>
+                  </svg>
+                  <span class="clear_cart">清空</span>
+                </div>
+              </header>
+              <section class="cart_food_details" id="cartFood">
+                <ul>
+                  <li v-for="(item, index) in data.cartFoodList" :key="index" class="cart_food_li">
+                    <div class="cart_list_num">
+                      <p class="ellipsis">{{ item.name }}</p>
+                      <p class="ellipsis">{{ item.specs }}</p>
+                    </div>
+                    <div class="cart_list_price">
+                      <span>¥</span>
+                      <span>{{ item.price }}</span>
+                    </div>
+                    <section class="cart_list_control">
+                      <span
+                        @click="removeOutCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
+                        <svg>
+                          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-minus"></use>
+                        </svg>
+                      </span>
+                      <span class="cart_num">{{ item.num }}</span>
+                      <svg class="cart_add"
+                        @click="addToCart(item.category_id, item.item_id, item.food_id, item.name, item.price, item.specs)">
+                        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#cart-add"></use>
+                      </svg>
+                    </section>
+                  </li>
+                </ul>
+              </section>
+            </section>
+          </transition>
         </section>
       </transition>
-    </section>
-    <section class="rating-container" v-show="data.isShow == '评价'">
-      <div class="rating-content" ref="ratingWrapper">
-        <header class="rating_header">
-          <section class="rating_header_left">
-            <p>{{ data.sellerDetailData.rating }}</p>
-            <p>综合评价</p>
-            <p>高于周边商家{{ (data.ratingScoresData.compare_rating * 100).toFixed(1) }}%</p>
-          </section>
-          <section class="rating_header_right">
-            <p>
-              <span>服务态度</span>
-              <rating-star :rating='data.ratingScoresData.service_score'></rating-star>
-              <span class="rating_num">{{ (data.ratingScoresData.service_score * 1).toFixed(1) }}</span>
-            </p>
-            <p>
-              <span>菜品评价</span>
-              <rating-star :rating='data.ratingScoresData.food_score'></rating-star>
-              <span class="rating_num">{{ (data.ratingScoresData.food_score * 1).toFixed(1) }}</span>
-            </p>
-            <p>
-              <span>总体评价</span>
-              <rating-star :rating='data.ratingScoresData.overall_score'></rating-star>
-              <span class="rating_num">{{ (data.ratingScoresData.overall_score * 1).toFixed(1) }}</span>
-            </p>
-            <p>
-              <span>送达时间</span>
-              <span class="delivery_time">{{ data.ratingScoresData.deliver_time }}分钟</span>
-            </p>
-          </section>
-        </header>
-        <ul class="tag_list_ul">
-          <li v-for="(item, index) in data.ratingTagsList" :key="index"
-            :class="{ unsatisfied: item.unsatisfied, tagActivity: data.ratingTageIndex == index }"
-            @click="changeTgeIndex(index, item.name)">{{ item.name }}({{ item.count }})</li>
-        </ul>
-        <ul class="rating_list_ul">
-          <li v-for="(item, index) in data.ratingList" :key="index" class="rating_list_li">
-            <img class="user_avatar" :src="useImgPath(item.avatar)">
-            <section class="rating_list_details">
-              <header>
-                <section class="username_star">
-                  <p class="username">{{ item.username }}</p>
-                  <p class="star_desc">
-                    <rating-star :rating='item.rating_star'></rating-star>
-                    <span class="time_spent_desc">{{ item.time_spent_desc }}</span>
+      <transition name="slide-fade" mode="out-in">
+        <section class="rating-container" v-show="data.isShow == '评价'">
+          <div class="rating-content" ref="ratingWrapper">
+            <div>
+              <header class="rating_header">
+                <section class="rating_header_left">
+                  <p>{{ data.sellerDetailData.rating }}</p>
+                  <p>综合评价</p>
+                  <p>高于周边商家{{ (data.ratingScoresData.compare_rating * 100).toFixed(1) }}%</p>
+                </section>
+                <section class="rating_header_right">
+                  <p>
+                    <span>服务态度</span>
+                    <rating-star :rating='data.ratingScoresData.service_score'></rating-star>
+                    <span class="rating_num">{{ (data.ratingScoresData.service_score * 1).toFixed(1) }}</span>
+                  </p>
+                  <p>
+                    <span>菜品评价</span>
+                    <rating-star :rating='data.ratingScoresData.food_score'></rating-star>
+                    <span class="rating_num">{{ (data.ratingScoresData.food_score * 1).toFixed(1) }}</span>
+                  </p>
+                  <p>
+                    <span>总体评价</span>
+                    <rating-star :rating='data.ratingScoresData.overall_score'></rating-star>
+                    <span class="rating_num">{{ (data.ratingScoresData.overall_score * 1).toFixed(1) }}</span>
+                  </p>
+                  <p>
+                    <span>送达时间</span>
+                    <span class="delivery_time">{{ data.ratingScoresData.deliver_time }}分钟</span>
                   </p>
                 </section>
-                <time class="rated_at">{{ item.rated_at }}</time>
               </header>
-              <ul class="food_img_ul">
-                <li v-for="(item, index) in item.item_ratings" :key="index">
-                  <img v-if="item.image_hash" :src="useImgPath(item.image_hash)">
+              <ul class="tag_list_ul">
+                <li v-for="(item, index) in data.ratingTagsList" :key="index"
+                  :class="{ unsatisfied: item.unsatisfied, tagActivity: data.ratingTageIndex == index }"
+                  @click="changeTgeIndex(index, item.name)">{{ item.name }}({{ item.count }})</li>
+              </ul>
+              <ul class="rating_list_ul">
+                <li v-for="(item, index) in data.ratingList" :key="index" class="rating_list_li">
+                  <img class="user_avatar" :src="useImgPath(item.avatar)">
+                  <section class="rating_list_details">
+                    <header>
+                      <section class="username_star">
+                        <p class="username">{{ item.username }}</p>
+                        <p class="star_desc">
+                          <rating-star :rating='item.rating_star'></rating-star>
+                          <span class="time_spent_desc">{{ item.time_spent_desc }}</span>
+                        </p>
+                      </section>
+                      <time class="rated_at">{{ item.rated_at }}</time>
+                    </header>
+                    <ul class="food_img_ul">
+                      <li v-for="(item, index) in item.item_ratings" :key="index">
+                        <img v-if="item.image_hash" :src="useImgPath(item.image_hash)">
+                      </li>
+                    </ul>
+                    <ul class="food_name_ul">
+                      <li v-for="(item, index) in item.item_ratings" :key="index" class="ellipsis">
+                        {{ item.food_name }}
+                      </li>
+                    </ul>
+                  </section>
                 </li>
               </ul>
-              <ul class="food_name_ul">
-                <li v-for="(item, index) in item.item_ratings" :key="index" class="ellipsis">
-                  {{ item.food_name }}
-                </li>
-              </ul>
-            </section>
-          </li>
-        </ul>
-      </div>
-    </section>
+            </div>
+          </div>
+        </section>
+      </transition>
+    </div>
     <!-- <router-view></router-view> -->
-    <transition name="seller-toggle">
+    <transition name="loading">
       <Loading v-if="data.showLoad"></Loading>
     </transition>
   </div>
@@ -214,7 +223,7 @@ import buyCart from 'components/common/buyCart'
 import RatingStar from 'components/common/RatingStar'
 import { imgBaseUrl } from 'config/env'
 import { sellerDetails, foodMenu, getRatingList, ratingScores, ratingTags } from 'network/getData'
-import { nextTick, computed, onMounted, onBeforeMount, reactive, ref, watch } from 'vue';
+import { nextTick, computed, onMounted, onBeforeMount, reactive, ref, watch, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useState, useMutations } from 'hooks/useMappers'
 import { useImgPath } from 'hooks/useImg'
@@ -254,6 +263,16 @@ const data = reactive({
   totalPrice: 0, //总共价格
   cartFoodList: [], //购物车商品列表
 })
+/*
+后端数据太多，对食物列表渲染的数据做处理，
+*/
+function foodsList (index) {
+  if (data.menuList[index].foods.length > 20) {
+    return data.menuList[index].foods.slice(0, 10)
+  } else {
+    return data.menuList[index].foods
+  }
+}
 
 const { latitude, longitude, cartList } = useState(['latitude', 'longitude', 'cartList'])
 const { SAVE_GEOHASH, SAVE_SHOPDETAIL } = useMutations(['SAVE_GEOHASH', 'SAVE_SHOPDETAIL'])
@@ -265,11 +284,20 @@ const deliveryFee = computed(() => {  //配送费
     return null;
   }
 })
-const shopCart = computed(() => {//当前商店购物信息
-  return { ...cartList.value[data.shopId] };
-})
-watch(shopCart, () => {
+// const shopCart = computed(() => {//当前商店购物信息
+//   return { ...cartList.value[data.shopId] };
+// })
+const shopCart = ref(null)
+// watch(shopCart, () => {
+//   initCategoryNum()
+// })
+watchEffect(() => { //watchEffect的回调会立即执行，不需要指定 immediate: true
+  // shopCart.value = { ...cartList.value[data.shopId] }
+  shopCart.value = cartList.value[data.shopId]
+  // console.log('initCate111', (shopCart.value))
   initCategoryNum()
+  console.log('shopCart,', shopCart.value)
+  console.log('cartList,', cartList.value[data.shopId])
 })
 const totalNum = computed(() => { //购物车中总共商品的数量
   let num = 0;
@@ -306,7 +334,8 @@ const initData = async () => {
   // });
   // console.log('@ssss@', document.querySelector('.commodity-list').scrollHeight)
   //获取商铺食品列表
-  data.menuList = (await foodMenu(data.shopId)).data
+  data.menuList = (await foodMenu(data.shopId)).data.slice(0, 20)
+
   // await foodMenu(data.shopId).then((res) => {
   //   data.menuList = res.data
   // });
@@ -444,12 +473,17 @@ function initCategoryNum () {
 // console.log('data,', data)
 onBeforeMount(async () => {
   await initData() //会被多次执行？？？
-  console.log('data,', data)
+  getFoodListHeight()
+  // console.log('data,', data)
+  // console.log('router,', router)
+  // console.log('route,', route)
+  // console.log('route.query._value,', route.query._value)
   //执行顺序： setup的同步代码 ==> 进入生命周期钩子 ==> await卡住initData(),进入initData ==> 执行initData同步代码，每个await都会卡住，等待promise执行完
   INIT_BUYCART();
-  initCategoryNum()
-  getFoodListHeight()
   bScroll()
+  // console.log('initCate222')
+  initCategoryNum()
+
   hideLoading()
 })
 
@@ -468,21 +502,20 @@ const sideWrapper = ref(null) //左侧边栏
 const ratingWrapper = ref(null) //评价内容
 const bScroll = () => {
   data.foodScroll = new BScroll(foodWrapper.value, {
-    observeDOM: true,  //引入ObserveDom插件，scroll自动调用refresh
-    // probeType: 3,
+    // observeDOM: true,  //引入ObserveDom插件，scroll自动调用refresh
+    probeType: 3,
     click: true,
     scrollY: true
   })
   data.sideScroll = new BScroll(sideWrapper.value, {
-    observeDOM: true,
+    // observeDOM: true,
     // probeType: 3,
     click: true,
     scrollY: true
   })
-
   data.ratingScroll = new BScroll(ratingWrapper.value, {
-    observeDOM: true,
-    // probeType: 3,
+    // observeDOM: true,
+    probeType: 3,
     click: true,
     scrollY: true
   })
@@ -491,13 +524,26 @@ const bScroll = () => {
   console.log('scroll-food', data.foodScroll.scrollerHeight)//使用await后可以正常读取
 }
 
+watch(() => data.isShow, () => {
+  if (!data.ratingScroll.scrollerHeight) {
+    data.ratingScroll.refresh()
+  }
+  console.log('watch-scroll-rating', data.ratingScroll.scrollerHeight)
+})
+
+const toggle = (v) => {
+  // if (data.ratingScroll.scrollerHeight == 0) {
+  //   data.ratingScroll.refresh()
+  // }
+  data.isShow = v
+
+}
 
 //获取食品列表的高度，存入shopListTop
 const getFoodListHeight = () => {
   if (foodWrapper.value) {
     // console.log('foodw.value', foodWrapper.value)
     // console.log('foodw.valuechildren', foodWrapper.value.children[0].children)
-
     const listArr = Array.from(foodWrapper.value.children[0].children);
     listArr.forEach((item, index) => {
       // console.log('item.offsetTop;', item)
@@ -507,14 +553,15 @@ const getFoodListHeight = () => {
     // console.log('shopListTop', data.shopListTop)
   }
 }
+
 const chooseMenu = (index) => {
   data.menuIndex = index;
   //menuIndexChange解决运动时listenScroll依然监听的bug
   data.menuIndexChange = false;
   data.foodScroll.scrollTo(0, -data.shopListTop[index], 500);
-  data.foodScroll.on('scrollEnd', () => {
-    data.menuIndexChange = true;
-  })
+  // data.foodScroll.on('scrollEnd', () => {
+  //   data.menuIndexChange = true;
+  // })
 }
 
 // onMounted(() => {
@@ -533,13 +580,24 @@ const chooseMenu = (index) => {
 <style lang="scss" scoped>
 @import '../../style/mixin.scss';
 
-.seller-toggle-leave-active,
-.seller-toggle-enter-active {
+.loading-leave-active,
+.loading-enter-active {
   transition: opacity 0.3s;
 }
 
-.seller-toggle-enter-from,
-.seller-toggle-leave-to {
+.loading-enter-from,
+.loading-leave-to {
+  opacity: 0;
+}
+
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.4s ease-out;
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  transform: translateX(30vw);
   opacity: 0;
 }
 
@@ -630,512 +688,518 @@ const chooseMenu = (index) => {
     }
   }
 
-  .food-container {
-    display: flex;
+  .container {
+    position: relative;
 
-    .side-bar {
-      flex: 1;
-      height: 72vh;
-      overflow-y: hidden;
+    .food-container {
+      display: flex;
 
-      .item {
-        color: #666;
-        width: 100%;
-        font-size: 4vw;
-        padding: 3vh 4vw 2vh 6vw; //上右下左
-        border-bottom: 0.5px solid #ededed;
-        border-left: 1px solid #f8f8f8;
+      .side-bar {
+        flex: 1;
+        height: 72vh;
+        overflow-y: hidden;
+
+        .item {
+          color: #666;
+          width: 100%;
+          font-size: 4vw;
+          padding: 3vh 4vw 2vh 6vw; //上右下左
+          border-bottom: 0.5px solid #ededed;
+          border-left: 1px solid #f8f8f8;
+          position: relative;
+        }
+
+        .active {
+          color: #666;
+          font-weight: 700;
+          background-color: #fff;
+          border-left: 1vw solid #3190e8;
+        }
+      }
+
+      .commodity-list {
+        flex: 3;
+        height: 72vh;
+        overflow: hidden;
         position: relative;
-      }
 
-      .active {
-        color: #666;
-        font-weight: 700;
-        background-color: #fff;
-        border-left: 1vw solid #3190e8;
-      }
-    }
-
-    .commodity-list {
-      flex: 3;
-      height: 72vh;
-      overflow: hidden;
-
-      .list {
-        position: relative;
-      }
-
-      header {
-        // background-color: #ccc;
-        padding-right: 2vw;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-
-        .left {
+        header {
+          // background-color: #ccc;
+          padding-right: 2vw;
           display: flex;
-          padding: 3vh 2vw 1.5vh 4vw;
+          justify-content: space-between;
+          align-items: center;
 
-          h2 {
-            font-weight: 700;
-            font-size: 4vw;
-            margin-right: 2vw;
-          }
-
-          span {
-            font-size: 3vw;
-            margin-top: 0.6vh;
-          }
-        }
-      }
-
-      .commodity {
-        width: 100%;
-        background-color: #fff;
-        display: flex;
-        padding: 2vh 3vw;
-        border-bottom: 1px solid #f5f5f5;
-
-        .detail_link {
-          flex: 1;
-
-          img {
-            height: 9vh;
-            width: 17vw;
-            margin-right: 2vw;
-
-          }
-        }
-
-        .commodity-detail {
-          flex: 3;
-
-          .detail-right {
-            width: 100%;
-
-
-            h3 {
-              display: flex;
-              justify-content: space-between;
-              margin-bottom: 0.5vh;
-
-              .title {
-                font-weight: 700;
-                font-size: 4vw;
-              }
-
-              .zhaopai {
-                color: rgb(240, 115, 115);
-                border: 1px solid rgb(240, 115, 115);
-                border-radius: 2vw;
-                height: 3.5vw;
-                line-height: 3.5vw;
-                font-size: 2vw;
-              }
-            }
-
-            .description-content {
-              font-size: 3vw;
-              color: #999;
-              line-height: 3vw;
-              margin-bottom: 0.5vh;
-            }
-
-            .description-rating {
-              margin-bottom: 0.5vh;
-
-              span {
-                font-size: 3vw;
-                line-height: 4vw;
-                color: #333;
-              }
-            }
-
-            .description-price {
-              display: flex;
-              justify-content: space-between;
-
-              .price {
-                font-size: 4vw;
-                color: #f60;
-                font-weight: bold;
-                margin-right: 2vw;
-              }
-            }
-          }
-        }
-
-      }
-    }
-
-
-    .cart_food_list {
-      position: fixed;
-      width: 100%;
-      padding-bottom: 8vh;
-      z-index: 12;
-      bottom: 0;
-      left: 0;
-      background-color: #fff;
-
-      header {
-        @include fj;
-        align-items: center;
-        padding: 1vh 4vw;
-        background-color: #eceff1;
-
-        svg {
-          @include wh(3vw, 3vw);
-          vertical-align: middle;
-        }
-
-        h4 {
-          @include fontsc(3.5vw, #666);
-        }
-
-        .clear_cart {
-          @include fontsc(3vw, #666);
-        }
-      }
-
-      .cart_food_details {
-        background-color: #fff;
-        max-height: 100vw;
-        overflow-y: auto;
-
-        .cart_food_li {
-          @include fj;
-          padding: 4vw 3.5vw;
-
-          .cart_list_num {
-            width: 55%;
-
-            p:nth-of-type(1) {
-              @include fontsc(4.3vw, #666);
-              font-weight: bold;
-            }
-
-            p:nth-of-type(2) {
-              @include fontsc(2.5vw, #666);
-            }
-          }
-
-          .cart_list_price {
-            font-size: 0;
-
-            span:nth-of-type(1) {
-              @include fontsc(3.7vw, #f60);
-              font-family: Helvetica Neue, Tahoma;
-
-            }
-
-            span:nth-of-type(2) {
-              @include fontsc(4vw, #f60);
-              font-family: Helvetica Neue, Tahoma;
-              font-weight: bold;
-            }
-          }
-
-          .cart_list_control {
+          .left {
             display: flex;
-            align-items: center;
+            padding: 3vh 2vw 1.5vh 4vw;
+
+            h2 {
+              font-weight: 700;
+              font-size: 4vw;
+              margin-right: 2vw;
+            }
 
             span {
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            }
-
-            svg {
-              @include wh(6vw, 6vw);
-              fill: #3190e8;
-            }
-
-            .specs_reduce_icon {
-              fill: #999;
-            }
-
-            .cart_num {
-              @include fontsc(4vw, #666);
-              min-width: 7vw;
-              text-align: center;
-              font-family: Helvetica Neue, Tahoma;
+              font-size: 3vw;
+              margin-top: 0.6vh;
             }
           }
         }
-      }
-    }
 
-  }
-
-  .buy_cart_container {
-    position: absolute;
-    background-color: #3d3d3f;
-    bottom: 0;
-    left: 0;
-    z-index: 13;
-    display: flex;
-    @include wh(100%, 7vh);
-
-    .cart_icon_num {
-      flex: 1;
-
-      .cart_icon_container {
-        display: flex;
-        background-color: #3d3d3f;
-        position: absolute;
-        padding: 2.5vw;
-        border: 1vw solid #444;
-        border-radius: 50%;
-        left: 3vw;
-        top: -4vw;
-
-        .cart_icon {
-          @include wh(8vw, 4vh);
-        }
-
-        .cart_list_length {
-          position: absolute;
-          top: 1vw;
-          right: 1vw;
-          background-color: #ff461d;
-          line-height: 1.6vh;
-          text-align: center;
-          border-radius: 50%;
-          border: 0.025rem solid #ff461d;
-          min-width: .7rem;
-          height: .7rem;
-          @include fontsc(.5rem, #fff);
-          font-family: Helvetica Neue, Tahoma, Arial;
-        }
-      }
-
-      .move_in_cart {
-        animation: mymove .5s ease-in-out;
-      }
-
-      .cart_icon_activity {
-        background-color: #3190e8;
-      }
-
-      .cart_num {
-        @include ct;
-        left: 22vw;
-
-        div {
-          color: #fff;
-        }
-
-        div:nth-of-type(1) {
-          font-size: 5vw;
-          font-weight: bold;
-          margin-bottom: .6vw;
-        }
-
-        div:nth-of-type(2) {
-          font-size: 2.5vw;
-        }
-      }
-    }
-
-    .gotopay {
-      position: absolute;
-      right: 0;
-      background-color: #535356;
-      @include wh(25vw, 100%);
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      .gotopay_button_style {
-        @include fontsc(4vw, #fff);
-        font-weight: bold;
-      }
-    }
-
-    .gotopay_acitvity {
-      background-color: #4cd964;
-    }
-  }
-
-  .rating-container {
-    flex: 1;
-    overflow-y: hidden;
-    flex-direction: column;
-    height: 100%;
-
-    .rating-content {
-      height: 100%;
-      overflow-y: auto;
-    }
-
-    p,
-    span,
-    li,
-    time {
-      font-family: Helvetica Neue, Tahoma, Arial;
-    }
-
-    .rating_header {
-      display: flex;
-      background-color: #fff;
-      padding: .8rem .5rem;
-      margin-bottom: 0.5rem;
-
-      .rating_header_left {
-        flex: 3;
-        text-align: center;
-
-        p:nth-of-type(1) {
-          @include fontsc(1.2rem, #f60);
-          margin-bottom: 0.5vh;
-        }
-
-        p:nth-of-type(2) {
-          @include fontsc(.65rem, #666);
-          margin-bottom: 0.5vh;
-        }
-
-        p:nth-of-type(3) {
-          @include fontsc(.4rem, #999);
-        }
-      }
-
-      .rating_header_right {
-        flex: 4;
-
-        p {
-          font-size: .65rem;
-          line-height: 1rem;
+        .commodity {
+          width: 100%;
+          background-color: #fff;
           display: flex;
-          align-items: center;
-          justify-content: flex-start;
+          padding: 2vh 3vw;
+          border-bottom: 1px solid #f5f5f5;
 
-          span:nth-of-type(1) {
-            color: #666;
-            margin-right: .5rem;
-          }
-
-          .rating_num {
-            margin: 0 2vw 0 1vw;
-            @include fontsc(.55rem, #f60);
-          }
-
-          .delivery_time {
-            @include fontsc(.4rem, #999);
-          }
-        }
-      }
-    }
-
-    .tag_list_ul {
-      display: flex;
-      flex-wrap: wrap;
-      background-color: #fff;
-      padding: .5rem;
-
-      li {
-        @include fontsc(.6rem, #6d7885);
-        padding: .3rem .3rem;
-        background-color: #ebf5ff;
-        border-radius: 0.2rem;
-        border: 1px;
-        margin: 0 .4rem .2rem 0;
-      }
-
-      .unsatisfied {
-        background-color: #f5f5f5;
-        color: #aaa;
-      }
-
-      .tagActivity {
-        background-color: #3190e8;
-        color: #fff;
-      }
-    }
-
-    .rating_list_ul {
-      background-color: #fff;
-      padding: 0 .5rem;
-
-      .rating_list_li {
-        border-top: 1px solid #f1f1f1;
-        display: flex;
-        padding: .6rem 0;
-
-        .user_avatar {
-          @include wh(1.5rem, 1.5rem);
-          border: 0.025rem;
-          border-radius: 50%;
-          margin-right: .8rem;
-        }
-
-        .rating_list_details {
-          flex: 1;
-
-          header {
-            display: flex;
+          .detail_link {
             flex: 1;
-            justify-content: space-between;
-            margin-bottom: .3rem;
 
-            .username_star {
-              @include fontsc(.55rem, #666);
+            img {
+              height: 9vh;
+              width: 17vw;
+              margin-right: 2vw;
 
-              .username {
-                color: #666;
-                margin-bottom: .2rem;
+            }
+          }
+
+          .commodity-detail {
+            flex: 3;
+
+            .detail-right {
+              width: 100%;
+
+
+              h3 {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 0.5vh;
+
+                .title {
+                  font-weight: 700;
+                  font-size: 4vw;
+                }
+
+                .zhaopai {
+                  color: rgb(240, 115, 115);
+                  border: 1px solid rgb(240, 115, 115);
+                  border-radius: 2vw;
+                  height: 3.5vw;
+                  line-height: 3.5vw;
+                  font-size: 2vw;
+                }
               }
 
-              .star_desc {
+              .description-content {
+                font-size: 3vw;
+                color: #999;
+                line-height: 3vw;
+                margin-bottom: 0.5vh;
+              }
+
+              .description-rating {
+                margin-bottom: 0.5vh;
+
+                span {
+                  font-size: 3vw;
+                  line-height: 4vw;
+                  color: #333;
+                }
+              }
+
+              .description-price {
+                display: flex;
+                justify-content: space-between;
+
+                .price {
+                  font-size: 4vw;
+                  color: #f60;
+                  font-weight: bold;
+                  margin-right: 2vw;
+                }
+              }
+            }
+          }
+
+        }
+      }
+
+
+      .cart_food_list {
+        position: fixed;
+        width: 100%;
+        padding-bottom: 8vh;
+        z-index: 12;
+        bottom: 0;
+        left: 0;
+        background-color: #fff;
+
+        header {
+          @include fj;
+          align-items: center;
+          padding: 1vh 4vw;
+          background-color: #eceff1;
+
+          svg {
+            @include wh(3vw, 3vw);
+            vertical-align: middle;
+          }
+
+          h4 {
+            @include fontsc(3.5vw, #666);
+          }
+
+          .clear_cart {
+            @include fontsc(3vw, #666);
+          }
+        }
+
+        .cart_food_details {
+          background-color: #fff;
+          max-height: 100vw;
+          overflow-y: auto;
+
+          .cart_food_li {
+            @include fj;
+            padding: 4vw 3.5vw;
+
+            .cart_list_num {
+              width: 55%;
+
+              p:nth-of-type(1) {
+                @include fontsc(4.3vw, #666);
+                font-weight: bold;
+              }
+
+              p:nth-of-type(2) {
+                @include fontsc(2.5vw, #666);
+              }
+            }
+
+            .cart_list_price {
+              font-size: 0;
+
+              span:nth-of-type(1) {
+                @include fontsc(3.7vw, #f60);
+                font-family: Helvetica Neue, Tahoma;
+
+              }
+
+              span:nth-of-type(2) {
+                @include fontsc(4vw, #f60);
+                font-family: Helvetica Neue, Tahoma;
+                font-weight: bold;
+              }
+            }
+
+            .cart_list_control {
+              display: flex;
+              align-items: center;
+
+              span {
                 display: flex;
                 align-items: center;
+                justify-content: center;
+              }
 
-                .time_spent_desc {
-                  @include fontsc(.55rem, #666);
-                  margin-left: .15rem;
+              svg {
+                @include wh(6vw, 6vw);
+                fill: #3190e8;
+              }
+
+              .specs_reduce_icon {
+                fill: #999;
+              }
+
+              .cart_num {
+                @include fontsc(4vw, #666);
+                min-width: 7vw;
+                text-align: center;
+                font-family: Helvetica Neue, Tahoma;
+              }
+            }
+          }
+        }
+      }
+
+    }
+
+    .buy_cart_container {
+      position: absolute;
+      background-color: #3d3d3f;
+      bottom: -7vh;
+      left: 0;
+      z-index: 13;
+      display: flex;
+      @include wh(100%, 7vh);
+
+      .cart_icon_num {
+        flex: 1;
+
+        .cart_icon_container {
+          display: flex;
+          background-color: #3d3d3f;
+          position: absolute;
+          padding: 2.5vw;
+          border: 1vw solid #444;
+          border-radius: 50%;
+          left: 3vw;
+          top: -4vw;
+
+          .cart_icon {
+            @include wh(8vw, 4vh);
+          }
+
+          .cart_list_length {
+            position: absolute;
+            top: 1vw;
+            right: 1vw;
+            background-color: #ff461d;
+            line-height: 1.6vh;
+            text-align: center;
+            border-radius: 50%;
+            border: 0.025*6vw solid #ff461d;
+            min-width: .7*6vw;
+            height: .7*6vw;
+            @include fontsc(.5*6vw, #fff);
+            font-family: Helvetica Neue, Tahoma, Arial;
+          }
+        }
+
+        .move_in_cart {
+          animation: mymove .5s ease-in-out;
+        }
+
+        .cart_icon_activity {
+          background-color: #3190e8;
+        }
+
+        .cart_num {
+          @include ct;
+          left: 22vw;
+
+          div {
+            color: #fff;
+          }
+
+          div:nth-of-type(1) {
+            font-size: 5vw;
+            font-weight: bold;
+            margin-bottom: .6vw;
+          }
+
+          div:nth-of-type(2) {
+            font-size: 2.5vw;
+          }
+        }
+      }
+
+      .gotopay {
+        position: absolute;
+        right: 0;
+        background-color: #535356;
+        @include wh(25vw, 100%);
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .gotopay_button_style {
+          @include fontsc(4vw, #fff);
+          font-weight: bold;
+        }
+      }
+
+      .gotopay_acitvity {
+        background-color: #4cd964;
+      }
+    }
+
+    .rating-container {
+      background-color: #f5f5f5;
+      height: 79vh;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 10;
+
+      .rating-content {
+        height: 100%;
+        overflow: hidden;
+      }
+
+      p,
+      span,
+      li,
+      time {
+        font-family: Helvetica Neue, Tahoma, Arial;
+      }
+
+      .rating_header {
+        display: flex;
+        background-color: #fff;
+        padding: .8*6vw .5*6vw;
+        margin-bottom: 0.5*6vw;
+
+        .rating_header_left {
+          flex: 3;
+          text-align: center;
+
+          p:nth-of-type(1) {
+            @include fontsc(1.2*6vw, #f60);
+            margin-bottom: 0.5vh;
+          }
+
+          p:nth-of-type(2) {
+            @include fontsc(.65*6vw, #666);
+            margin-bottom: 0.5vh;
+          }
+
+          p:nth-of-type(3) {
+            @include fontsc(.4*6vw, #999);
+          }
+        }
+
+        .rating_header_right {
+          flex: 4;
+
+          p {
+            font-size: .65*6vw;
+            line-height: 1*6vw;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+
+            span:nth-of-type(1) {
+              color: #666;
+              margin-right: .5*6vw;
+            }
+
+            .rating_num {
+              margin: 0 2vw 0 1vw;
+              @include fontsc(.55*6vw, #f60);
+            }
+
+            .delivery_time {
+              @include fontsc(.4*6vw, #999);
+            }
+          }
+        }
+      }
+
+      .tag_list_ul {
+        display: flex;
+        flex-wrap: wrap;
+        background-color: #fff;
+        padding: .5*6vw;
+
+        li {
+          @include fontsc(.6*6vw, #6d7885);
+          padding: .3*6vw .3*6vw;
+          background-color: #ebf5ff;
+          border-radius: 0.2*6vw;
+          border: 1px;
+          margin: 0 .4*6vw .2*6vw 0;
+        }
+
+        .unsatisfied {
+          background-color: #f5f5f5;
+          color: #aaa;
+        }
+
+        .tagActivity {
+          background-color: #3190e8;
+          color: #fff;
+        }
+      }
+
+      .rating_list_ul {
+        background-color: #fff;
+        padding: 0 .5*6vw;
+
+        .rating_list_li {
+          border-top: 1px solid #f1f1f1;
+          display: flex;
+          padding: .6*6vw 0;
+
+          .user_avatar {
+            @include wh(1.5*6vw, 1.5*6vw);
+            border: 0.025*6vw;
+            border-radius: 50%;
+            margin-right: .8*6vw;
+          }
+
+          .rating_list_details {
+            flex: 1;
+
+            header {
+              display: flex;
+              flex: 1;
+              justify-content: space-between;
+              margin-bottom: .3*6vw;
+
+              .username_star {
+                @include fontsc(.55*6vw, #666);
+
+                .username {
+                  color: #666;
+                  margin-bottom: .2*6vw;
+                }
+
+                .star_desc {
+                  display: flex;
+                  align-items: center;
+
+                  .time_spent_desc {
+                    @include fontsc(.55*6vw, #666);
+                    margin-left: .15*6vw;
+                  }
+                }
+              }
+
+              .rated_at {
+                @include fontsc(.4*6vw, #999);
+              }
+            }
+
+            .food_img_ul {
+              display: flex;
+              flex-wrap: wrap;
+              margin-bottom: .4*6vw;
+
+              li {
+                img {
+                  @include wh(3*6vw, 3*6vw);
+                  margin-right: .4*6vw;
+                  display: block;
                 }
               }
             }
 
-            .rated_at {
-              @include fontsc(.4rem, #999);
-            }
-          }
+            .food_name_ul {
+              display: flex;
+              flex-wrap: wrap;
 
-          .food_img_ul {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: .4rem;
-
-            li {
-              img {
-                @include wh(3rem, 3rem);
-                margin-right: .4rem;
-                display: block;
+              li {
+                @include fontsc(.55*6vw, #999);
+                width: 2.2*6vw;
+                padding: .2*6vw;
+                border: 0.025*6vw solid #ebebeb;
+                border-radius: 0.15*6vw;
+                margin-right: .3*6vw;
+                margin-bottom: 4px;
               }
-            }
-          }
-
-          .food_name_ul {
-            display: flex;
-            flex-wrap: wrap;
-
-            li {
-              @include fontsc(.55rem, #999);
-              width: 2.2rem;
-              padding: .2rem;
-              border: 0.025rem solid #ebebeb;
-              border-radius: 0.15rem;
-              margin-right: .3rem;
-              margin-bottom: 4px;
             }
           }
         }
       }
     }
   }
+
 
 }
 

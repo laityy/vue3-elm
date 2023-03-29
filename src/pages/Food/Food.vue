@@ -1,11 +1,7 @@
 <template>
   <div class="food">
-    <head-top class="head-top" :goBack="true">
-      <template #title>
-        <span class="title">
-          {{ route.query.title }}
-        </span>
-      </template>
+    <head-top class="head-top" :goBack="true" :title="route.query.title">
+
     </head-top>
     <section class="sort-container">
       <div class="sort-items">

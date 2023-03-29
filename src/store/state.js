@@ -1,5 +1,7 @@
 export default {
-    userInfo: '', //用户信息
+    userInfo: {
+        user_id: 12,
+    }, //用户信息
     login: false, //是否登录
     cityName: '武汉', //当其城市名
     cityId: 7,

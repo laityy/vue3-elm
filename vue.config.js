@@ -9,7 +9,6 @@ module.exports = {
                 components: '@/components',
                 config: '@/config',
                 hooks: '@/hooks',
-                mixins: '@/mixins',
                 network: '@/network',
                 pages: '@/pages',
                 plugins: '@/plugins',

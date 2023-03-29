@@ -111,7 +111,7 @@ export default {
     //清空当前商品的购物车信息
     [CLEAR_CART](state, shopid) {
         state.cartList[shopid] = null
-        state.cartList = { ...state.cartList }
+        state.cartList = { ...state.cartList } //用扩展运算符实现浅拷贝
         setStorage('buyCart', JSON.stringify(state.cartList))
     },
     //保存下单后购物id 和 sig

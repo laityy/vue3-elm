@@ -1,10 +1,6 @@
 <template>
   <div class="city">
-    <head-top class="home_top" :goBack="true">
-
-      <template #title>
-        <span class="title">{{ cityName }}</span>
-      </template>
+    <head-top class="home_top" :goBack="true" :title="cityName">
       <template #change>
         <span class="change" @click="router.go(-1)">切换城市</span>
       </template>

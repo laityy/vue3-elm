@@ -7,7 +7,10 @@ const Search = () => import('pages/Search/Search')
 const Order = () => import('pages/Order/Order')
 const Me = () => import('pages/Me/Me')
 const Info = () => import('pages/Me/children/Info')
+const SetUserName = () => import('pages/Me/children/children/SetUserName')
+const Address = () => import('pages/Me/children/children/Address')
 const Login = () => import('pages/Login/Login')
+
 const Food = () => import('pages/Food/Food')
 const Seller = () => import('pages/Seller/Seller')
 const SellerDetail = () => import('pages/Seller/SellerDetail')
@@ -53,6 +56,16 @@ const routes = [
             {
                 path: 'info',
                 component: Info,
+                children: [
+                    {
+                        path: 'setusername',
+                        component: SetUserName,
+                    },
+                    {
+                        path: 'address',
+                        component: Address,
+                    },
+                ],
             },
         ],
     },

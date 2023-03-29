@@ -38,7 +38,14 @@
 import { reactive } from 'vue';
 import { useState, useMutations } from 'hooks/useMappers'
 import { computed } from '@vue/reactivity';
-const props = defineProps(['foods', 'shopId'])
+const props = defineProps({
+  foods: {
+    type: Object
+  },
+  shopId: {
+    type: String
+  }
+})
 const emit = defineEmits(['showMoveDot', 'showChooseList', 'showReduceTip'])
 const { cartList } = useState(['cartList'])
 

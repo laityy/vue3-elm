@@ -1,9 +1,7 @@
 <template>
   <div class="search">
-    <head-top :goBack="true">
-      <template #title>
-        <span>搜索</span>
-      </template>
+    <head-top :go-back="true" title="搜索">
+      <!-- 使用 DOM 内的模板时，都需要转换为相应等价的 kebab-case (短横线连字符) 形式 -->
     </head-top>
     <form class="search_form">
       <input type="search" placeholder="请输入商家或美食名称" class="search_input">

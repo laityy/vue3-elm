@@ -1,9 +1,6 @@
 <template>
   <div class="order">
-    <head-top :goBack="true">
-      <template #title>
-        <span>订单列表</span>
-      </template>
+    <head-top :go-back="true" title="订单列表">
     </head-top>
     <footer-tab></footer-tab>
   </div>

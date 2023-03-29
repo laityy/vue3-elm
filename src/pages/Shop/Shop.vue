@@ -1,11 +1,8 @@
 <template>
   <div class="shop">
-    <head-top class="head_top" signinUp="shop">
+    <head-top class="head_top" signinUp="shop" :title="data.shopAddress">
       <template #search>
         <router-link to="/search"><span class="search">搜索</span></router-link>
-      </template>
-      <template #title>
-        <span class="title">{{ data.shopAddress }}</span>
       </template>
     </head-top>
     <div class="nav">

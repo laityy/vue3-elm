@@ -11,9 +11,10 @@
           <slot name="logo"></slot>
           <slot name="search"></slot>
         </div>
-        <div class="middle">
-          <slot name="title"></slot>
+        <div class="title" v-if="title">
+          {{ title }}
         </div>
+        <!-- <slot name="title"></slot> -->
         <div class="right">
           <slot name="change"></slot>
           <router-link :to="userInfo ? '/me' : '/login'" class="head-login" v-if="signinUp">
@@ -33,7 +34,7 @@ import { defineProps } from 'vue';
 import { useRouter } from 'vue-router'
 import { useState } from 'hooks/useMappers'
 
-defineProps(['goBack', 'userInfo', 'signinUp'])
+defineProps(['goBack', 'userInfo', 'signinUp', 'title'])
 const router = useRouter()
 const { userInfo } = useState(['userInfo'])
 // console.log('userInfo', userInfo)
@@ -79,10 +80,11 @@ const { userInfo } = useState(['userInfo'])
     }
   }
 
-  .middle {
+  .title {
     width: 50vw; //注意和组件的title宽度一致
     margin: 0 auto;
-    color: #fff;
+    font-weight: 700;
+    @include fontsc(5vw, #fff);
   }
 
   .right {
