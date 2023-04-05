@@ -40,10 +40,12 @@ import { useState, useMutations } from 'hooks/useMappers'
 import { computed } from '@vue/reactivity';
 const props = defineProps({
   foods: {
-    type: Object
+    type: Object,
+    required: true,
   },
   shopId: {
-    type: String
+    type: String,
+    required: true,
   }
 })
 const emit = defineEmits(['showMoveDot', 'showChooseList', 'showReduceTip'])

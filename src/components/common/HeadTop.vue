@@ -30,14 +30,20 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, onBeforeMount } from 'vue';
 import { useRouter } from 'vue-router'
-import { useState } from 'hooks/useMappers'
+import { useState, useActions } from 'hooks/useMappers'
 
 defineProps(['goBack', 'userInfo', 'signinUp', 'title'])
 const router = useRouter()
 const { userInfo } = useState(['userInfo'])
+const { getUserInfo } = useActions(['getUserInfo'])
+onBeforeMount(() => {
+  getUserInfo()
+})
 // console.log('userInfo', userInfo)
+
+
 
 </script>
 

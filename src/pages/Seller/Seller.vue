@@ -483,15 +483,8 @@ onBeforeMount(async () => {
   bScroll()
   // console.log('initCate222')
   initCategoryNum()
-
   hideLoading()
 })
-
-
-
-console.log('setup================================================???????????????')
-
-
 
 
 const hideLoading = () => {
@@ -566,14 +559,14 @@ const chooseMenu = (index) => {
 
 // onMounted(() => {
 //   console.log('@ssss@', document.querySelector('.commodity-list').scrollHeight) //同步执行
-  // debugger
-  // bScroll()
-  // nextTick(() => {
-  //   console.log(456)
-  //   // debugger
-  //   getFoodListHeight()
-  // })
+// bScroll()
+// nextTick(() => {
+//   console.log(456)
+//   // debugger
+//   getFoodListHeight()
 // })
+// })
+console.log('setup================================================setup执行结束')
 
 </script>
 

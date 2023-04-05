@@ -29,3 +29,17 @@ export const useMutations = function (mapper) {
 
     return storeMutations
 }
+export const useActions = function (mapper) {
+    const store = useStore()
+    const storeActionsFn = mapActions(mapper)
+    // console.log(storeMutationsFn)
+
+    const storeActions = {}
+
+    Object.keys(storeActionsFn).forEach((keyFn) => {
+        storeActions[keyFn] = storeActionsFn[keyFn].bind({ $store: store })
+    })
+    // console.log(storeMutations)
+
+    return storeActions
+}

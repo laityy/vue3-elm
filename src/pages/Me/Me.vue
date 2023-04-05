@@ -149,6 +149,7 @@ import { reactive, toRefs, watch } from 'vue'
 import { computed } from '@vue/reactivity'
 
 const { userInfo } = useState(['userInfo'])
+console.log('userInfo', userInfo)
 const imgpath = computed(() => {
   let path;
   if (data.avatar.indexOf('/') !== -1) {
@@ -171,13 +172,13 @@ const data = reactive({
 })
 const { username, mobile, balance, count, pointNumber } = toRefs(data)
 function initData () {
-  if (data.userInfo && data.userInfo.user_id) {
-    data.avatar = data.userInfo.avatar;
-    data.username = data.userInfo.username;
-    data.mobile = data.userInfo.mobile || '暂无绑定手机号';
-    data.balance = data.userInfo.balance;
-    data.count = data.userInfo.gift_amount;
-    data.pointNumber = data.userInfo.point;
+  if (userInfo.value && userInfo.value.user_id) {
+    data.avatar = userInfo.value.avatar;
+    data.username = userInfo.value.username;
+    data.mobile = userInfo.value.mobile || '暂无绑定手机号';
+    data.balance = userInfo.value.balance;
+    data.count = userInfo.value.gift_amount;
+    data.pointNumber = userInfo.value.point;
   } else {
     data.username = '登录/注册';
     data.mobile = '暂无绑定手机号';

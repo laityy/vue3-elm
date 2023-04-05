@@ -106,13 +106,13 @@
 <script setup>
 import { useState, useMutations } from 'hooks/useMappers'
 import HeadTop from 'components/common/HeadTop'
-// import { signout } from 'src/service/getData'
-// import alertTip from 'src/components/common/alertTip'
+import { signOut } from 'network/getData'
+import AlertTip from 'components/common/AlertTip'
 import { useImgPath } from 'hooks/useImg'
 import { imgBaseUrl } from 'config/env'
 import { onUnmounted, reactive, toRefs, watch } from 'vue'
-// import { *6vwoveStore } from 'src/config/mUtils'
-
+import { removeStorage } from 'utils'
+import { useRouter } from 'vue-router'
 const data = reactive({
   username: '',    //用户名
   resetname: '', //重置用户名
@@ -125,12 +125,11 @@ const data = reactive({
   alertText: null,
   imgBaseUrl,
 })
-const { username } = toRefs(data)
+const { username, show, isEnter, isLeave, showAlert, alertText, infotel } = toRefs(data)
 const { userInfo, imgPath } = useState(['userInfo', 'imgPath'])
 const { OUT_LOGIN, SAVE_AVANDER } = useMutations(['OUT_LOGIN', 'SAVE_AVANDER'])
-onUnmounted(() => {
-  clearTimeout(data.timer)
-})
+const router = useRouter()
+
 function exitlogin () {
   data.show = true;
   data.isEnter = true;
@@ -139,22 +138,22 @@ function exitlogin () {
 
 
 function waitingThing () {
-  //取消推出
-  clearTimeout(data.timer)
-  data.isEnter = false;
-  data.isLeave = true;
+  //取消退出
+  data.isEnter = false
+  data.isLeave = true
+
   data.timer = setTimeout(() => {
+    data.show = false
     clearTimeout(data.timer)
-    data.show = false;
   }, 200)
 }
 //退出登录
 async function outLogin () {
-  OUT_LOGIN();
-  data.waitingThing();
-  data.$router.go(-1);
-  remveStore('user_id')
-  await signout();
+  OUT_LOGIN() //删除vuex数据
+  waitingThing() //提示框消失
+  removeStorage('user_id') //删除localStorage数据
+  await signOut()
+  router.go(-1)  //路由返回
 }
 function changePhone () {
   data.showAlert = true;
@@ -162,19 +161,19 @@ function changePhone () {
 }
 async function uploadAvatar () {
   //上传头像
-  if (userInfo) {
+  if (userInfo.value) {
     let input = document.querySelector('.profileinfopanel-upload')
     let data = new FormData();
     data.append('file', input.files[0]);
     try {
-      let response = await fetch('/eus/v1/users/' + userInfo.user_id + '/avatar', {
+      let response = await fetch('/eus/v1/users/' + userInfo.value.user_id + '/avatar', {
         method: 'POST',
         credentials: 'include',
         body: data
       })
       let res = await response.json();
       if (res.status == 1) {
-        userInfo.avatar = res.image_path;
+        userInfo.value.avatar = res.image_path;
       }
     } catch (error) {
       data.showAlert = true;

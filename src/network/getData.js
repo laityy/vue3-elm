@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { dataStr } from '../utils'
+import { dataStr, getStorage } from '../utils'
 const proxy = ''
 let str = ''
 export const hotCity = () => axios.get(`${proxy}/v1/cities?type=hot`)
@@ -127,3 +127,70 @@ export const checkout = (geohash, entities, shopid) => {
 
 export const getAddress = (id, sig) =>
     axios.get(`${proxy}/v1/carts/${id}/addresses?${sig}`)
+
+/**
+ * 获取短信验证码
+ */
+
+export const mobileCode = (phone) =>
+    axios.post('/v4/mobile/verify_code/send', {
+        mobile: phone,
+        scene: 'login',
+        type: 'sms',
+    })
+
+/**
+ * 获取图片验证码
+ */
+
+export const getcaptchas = () => axios.post('/v1/captchas', {})
+
+/**
+ * 检测帐号是否存在
+ */
+
+export const checkExsis = (checkNumber, type) => {
+    str = dataStr({
+        [type]: checkNumber,
+        type,
+    })
+    return axios.get('/v1/users/exists?' + str)
+}
+
+/**
+ * 账号密码登录
+ */
+export const accountLogin = (username, password, captcha_code) =>
+    axios.post(`${proxy}/v2/login`, { username, password, captcha_code })
+
+/**
+ * 获取用户信息
+ */
+
+export const getUser = () => {
+    str = dataStr({ user_id: getStorage('user_id') })
+    return axios.get('/v1/user?' + str)
+}
+
+/**
+ * 手机号登录
+ */
+
+export const sendLogin = (code, mobile, validate_token) =>
+    axios.post('/v1/login/app_mobile', {
+        code,
+        mobile,
+        validate_token,
+    })
+
+/**
+ *个人中心里编辑地址
+ */
+
+export const getAddressList = (user_id) =>
+    axios.get('/v1/users/' + user_id + '/addresses')
+
+/**
+ * 退出登录
+ */
+export const signOut = () => axios.get('/v2/signout')

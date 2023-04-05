@@ -1,5 +1,5 @@
 const RECORD_USERINFO = 'RECORD_USERINFO'
-const GET_USERINFO = 'GET_USERINFO'
+// const GET_USERINFO = 'GET_USERINFO'
 const SAVE_CITY = 'SAVE_CITY'
 const SAVE_PLACE = 'SAVE_PLACE'
 const SAVE_GEOHASH = 'SAVE_GEOHASH'
@@ -10,17 +10,19 @@ const INIT_BUYCART = 'INIT_BUYCART'
 const CLEAR_CART = 'CLEAR_CART'
 const SAVE_SHOPID = 'SAVE_SHOPID'
 const SAVE_CART_ID_SIG = 'SAVE_CART_ID_SIG'
+const OUT_LOGIN = 'OUT_LOGIN'
 import { setStorage, getStorage } from '../utils'
 
 export default {
+    //保存用户信息
     [RECORD_USERINFO](state, info) {
         state.userInfo = info
         state.login = true
         setStorage('user_id', info.user_id)
     },
-    [GET_USERINFO](state, info) {
-        state.userInfo = info
-    },
+    // [GET_USERINFO](state, info) {
+    //     state.userInfo = info
+    // },
     [SAVE_CITY](state, { name, id }) {
         state.cityName = name
         state.cityId = id
@@ -111,12 +113,17 @@ export default {
     //清空当前商品的购物车信息
     [CLEAR_CART](state, shopid) {
         state.cartList[shopid] = null
-        state.cartList = { ...state.cartList } //用扩展运算符实现浅拷贝
+        // state.cartList = { ...state.cartList } //用扩展运算符实现浅拷贝
         setStorage('buyCart', JSON.stringify(state.cartList))
     },
     //保存下单后购物id 和 sig
     [SAVE_CART_ID_SIG](state, { cart_id, sig }) {
         state.cartId = cart_id
         state.sig = sig
+    },
+    //退出登录
+    [OUT_LOGIN](state) {
+        state.userInfo = {}
+        state.login = false
     },
 }
