@@ -1,14 +1,62 @@
 # 基于vue3的elm项目
 
-## 目录结构
-|-- 
+
+|-- undefined
     |-- .gitignore
     |-- babel.config.js
     |-- package-lock.json
     |-- package.json
     |-- README.md
     |-- vue.config.js
-    |-- problems  
+    |-- dist
+    |   |-- favicon.ico
+    |   |-- index.html
+    |   |-- css
+    |   |   |-- app.35ea9ca3.css
+    |   |   |-- chunk-0bbb85cc.ca732134.css
+    |   |   |-- chunk-0eec9d8a.9ce6fc78.css
+    |   |   |-- chunk-1efbb0ec.9291a08a.css
+    |   |   |-- chunk-2a09765b.ecf78871.css
+    |   |   |-- chunk-a1a2407e.7553bce1.css
+    |   |   |-- chunk-af3f398e.2e9f4c6b.css
+    |   |   |-- chunk-cb080814.1cb140f0.css
+    |   |   |-- chunk-cc59c2f6.340edab9.css
+    |   |-- img
+    |   |   |-- icon_loading.7a1ee6db.png
+    |   |-- js
+    |       |-- app.a4822dd7.js
+    |       |-- app.a4822dd7.js.map
+    |       |-- chunk-0bbb85cc.8f86857c.js
+    |       |-- chunk-0bbb85cc.8f86857c.js.map
+    |       |-- chunk-0eec9d8a.73c22e49.js
+    |       |-- chunk-0eec9d8a.73c22e49.js.map
+    |       |-- chunk-1efbb0ec.610b7345.js
+    |       |-- chunk-1efbb0ec.610b7345.js.map
+    |       |-- chunk-2a09765b.8804f2fc.js
+    |       |-- chunk-2a09765b.8804f2fc.js.map
+    |       |-- chunk-2d0c04a6.0f71a5d4.js
+    |       |-- chunk-2d0c04a6.0f71a5d4.js.map
+    |       |-- chunk-2d0db120.c79de947.js
+    |       |-- chunk-2d0db120.c79de947.js.map
+    |       |-- chunk-2d0e97af.68c2cddc.js
+    |       |-- chunk-2d0e97af.68c2cddc.js.map
+    |       |-- chunk-2d21403b.2102d2e9.js
+    |       |-- chunk-2d21403b.2102d2e9.js.map
+    |       |-- chunk-2d222358.c8f25f14.js
+    |       |-- chunk-2d222358.c8f25f14.js.map
+    |       |-- chunk-a1a2407e.9ca4372b.js
+    |       |-- chunk-a1a2407e.9ca4372b.js.map
+    |       |-- chunk-af3f398e.931f06b1.js
+    |       |-- chunk-af3f398e.931f06b1.js.map
+    |       |-- chunk-c08c8726.0681be00.js
+    |       |-- chunk-c08c8726.0681be00.js.map
+    |       |-- chunk-cb080814.8ad58816.js
+    |       |-- chunk-cb080814.8ad58816.js.map
+    |       |-- chunk-cc59c2f6.0894b769.js
+    |       |-- chunk-cc59c2f6.0894b769.js.map
+    |       |-- chunk-vendors.70f95059.js
+    |       |-- chunk-vendors.70f95059.js.map
+    |-- problems
     |   |-- 2023-3-31git推送问题.txt
     |-- public
     |   |-- favicon.ico
@@ -19,12 +67,14 @@
         |-- assets
         |-- components
         |   |-- common
-        |   |   |-- AlertTip.vue  //提示框
-        |   |   |-- buyCart.vue   //购物车
-        |   |   |-- HeadTop.vue   //顶部导航
-        |   |   |-- Loading.vue   //加载中动画
-        |   |   |-- RatingStar.vue  //评分
-        |   |   |-- Svg.vue   
+        |   |   |-- AlertTip.vue
+        |   |   |-- buyCart.vue
+        |   |   |-- HeadTop.vue
+        |   |   |-- Loading.vue
+        |   |   |-- RatingStar.vue
+        |   |   |-- Svg.vue
+        |   |-- Scroll
+        |   |   |-- Scroll.vue
         |   |-- ShopList
         |   |   |-- ShopList.vue
         |   |   |-- ShopListItem.vue
@@ -33,60 +83,60 @@
         |       |-- TabItem.vue
         |-- config
         |   |-- env.js
-        |-- hooks       //组合式函数
+        |-- hooks
         |   |-- useImg.js
         |   |-- useMappers.js
-        |-- images   
+        |-- images
         |   |-- 164ad0b6a3917599.jpg
         |   |-- address_bottom.png
         |   |-- default.jpg
         |   |-- icon_loading.png
-        |-- network     //网络请求 
+        |-- network
         |   |-- getData.js
-        |-- pages       //路由组件
-        |   |-- City    //城市
+        |-- pages
+        |   |-- City
         |   |   |-- City.vue
-        |   |-- ConfirmOrder  //确认订单
+        |   |-- ConfirmOrder
         |   |   |-- ConfirmOrder.vue
-        |   |-- Food     //食物分类(4类)
+        |   |-- Food
         |   |   |-- Food.vue
-        |   |-- Home     //首页
+        |   |-- Home
         |   |   |-- Home.vue
-        |   |-- Login    //登录
+        |   |-- Login
         |   |   |-- Login.vue
-        |   |-- Me       //我的
+        |   |-- Me
         |   |   |-- Me.vue
         |   |   |-- children
         |   |       |-- Info.vue
         |   |       |-- children
         |   |           |-- Address.vue
         |   |           |-- SetUserName.vue
-        |   |-- Order   //订单
+        |   |-- Order
         |   |   |-- Order.vue
-        |   |-- Search  //搜索
+        |   |-- Search
         |   |   |-- Search.vue
-        |   |-- Seller  //卖家主页
+        |   |-- Seller
         |   |   |-- FoodDetail.vue
         |   |   |-- Seller.vue
         |   |   |-- SellerDetail.vue
         |   |   |-- SellerRate.vue
         |   |   |-- children
         |   |       |-- SellerSafe.vue
-        |   |-- Shop  //店铺列表
+        |   |-- Shop
         |       |-- Shop.vue
         |-- plugins
         |   |-- better-scroll.js
-        |-- router    //路由配置
+        |-- router
         |   |-- index.js
-        |-- store     //状态管理
+        |-- store
         |   |-- actions.js
         |   |-- index.js
         |   |-- mutations-type.js
         |   |-- mutations.js
         |   |-- state.js
-        |-- style     //全局样式
-        |   |-- common.scss  //公共样式
-        |   |-- mixin.scss   //混入样式
-        |   |-- scroll.scss  //滚动样式
-        |-- utils     //工具函数
+        |-- style
+        |   |-- common.scss
+        |   |-- mixin.scss
+        |   |-- scroll.scss
+        |-- utils
             |-- index.js
